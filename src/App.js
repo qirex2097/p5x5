@@ -1,71 +1,59 @@
 import React, { useState } from 'react';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
 import sketch from './sketch';
-import blocks from './block';
+import initialize_blocks, {command_moji, command_list} from './block';
 
-function Panel({panel, onSelect, selected=null, size=50, style={}}) {
-    const Buttons = ({buttons, top}) => {
-        return buttons.map((v, i) => { 
-            return (<button key={v} 
-                            style={{width: size+'px', height: size+'px', position: 'absolute', top: top, left: i * size, 
-                                    background: selected === v ? 'orange' : 'skyblue',
-                                    ...style}}
-                            onClick={ () => onSelect(v)}>{v}</button>) })
-    }
-
+function Panel({panel, onSelect, selected=null, yoko=5, size=50, style={}}) {
     return (
         <>
-            {panel.map((_, i) => {
-                return (
-                    <div key={i} style={{'display': 'grid', 'gridTemplateColumns': '50px 50px 50px 50px 50px'}}>
-                        <Buttons buttons={panel[i]} top={i * size} />
-                    </div>
-                );
+            {panel.map((v, i) => {
+                return (<button key={i} 
+                                style={{width:size+'px', height:size+'px', position: 'absolute', top:Math.floor(i / yoko) * size, left: (i % yoko) * size,
+                                        background: selected === i ? 'orange' : 'lightblue',
+                                        ...style}}
+                                onClick={ () => onSelect(i) }>
+                            {v}
+                        </button>)
             })}
         </>
     );
-}  
+}
 
-function Board({command, onSelect}) {
+function Board({blocks, onSelect}) {
     const TATE=5;
     const YOKO=5;
 
-    const values = [...Array(TATE)].map((_, i) => { 
-        return [...Array(YOKO)].fill(100 + i * YOKO).map((p, q) => p + q)
-    });
+    const values = new Array(TATE * YOKO).fill('');
 
     return (
-        <div style={{position:"relative"}}>
-            <ReactP5Wrapper sketch={sketch} width={250} height={250} style={{position:"absolute"}}/>
-            <Panel panel={values} onSelect={onSelect} style={{background: 'transparent', color: 'transparent', border: 'dashed 1px grey'}} />
+        <div style={{position:"relative", height:260}}>
+            <ReactP5Wrapper sketch={sketch} width={250} height={250} blocks={blocks} style={{position:"absolute"}}/>
+            <Panel panel={values} onSelect={onSelect} style={{background: 'transparent', border: 'dashed 1px grey'}} />
         </div>
     );
 }
 
 function Command({command, onSelect}) {
-    const command_button = [['1','2','3','4','5'], ['①','②','③','④','⑤'],[,,,,'DEL']];
-
     return (
-        <div style={{position:'relative'}}>
-            <Panel panel={command_button} onSelect={onSelect} selected={command} style={{color: 'black', border: 'solid 1px'}}/>
+        <div style={{position:'relative', height:160}}>
+            <Panel panel={command_moji} onSelect={onSelect} selected={command} style={{border: 'solid 1px grey'}}/>
         </div>
     );
 }
 
 function Game(props) {
     const [command, setCommand] = useState(null);
+    const [blocks, setBlocks] = useState(initialize_blocks);
 
-    const button_pushed = (v) => {
-        console.log(v % 100, blocks[v%100]);
-        blocks[v % 100] =  command;
-        console.log('Board:button_pushed', v, command, 'blocks', blocks[v % 100]);
-        console.log('button_pushed:', command, v);
+    function dispach_command(block_no, command) {
+        if (!Number.isInteger(command) || command_list.length <= command) return;
+        setBlocks(command_list[command](blocks, block_no, command));
     }
 
     return (
         <>
             <h1>{props.title}</h1>
-            <Board command={command} onSelect={(v) => {button_pushed(v)}} />
+            <Board blocks={blocks} onSelect={(v) => {dispach_command(v, command)}} />
             <Command command={command} onSelect={(c) => command === c ? setCommand(null) : setCommand(c)} />
         </>
     );
