@@ -29,36 +29,81 @@ const command_data = [
         func: set_value,
         style: { background: 'pink', border: 'solid 5px black'},
     },
-    {   // 5
-        no: 9,
-        moji: 'DEL',
-        func: delete_value,
-        style: { background: 'orange', border: 'solid 5px black'},
-        base_style: { background: 'lightgrey', border: 'solid 1px grey'},
-    },
+  {
+    no: 5,
+    moji: '',
+    func: set_color,
+    style: {background: 'seagreen', border: 'solid 5px black', },
+    base_style: {background: 'seagreen', border: 'solid 1px grey', },
+  },
+  {
+    no: 6,
+    moji: '',
+    func: set_color,
+    style: { background: 'royalblue', border: 'solid 5px black', },
+    base_style: {background: 'royalblue', border: 'solid 1px grey', },
+  },
+  {
+    no: 7,
+    moji: '',
+    func: set_color,
+    style: { background: 'gold', border: 'solid 5px black', },
+    base_style: {background: 'gold', border: 'solid 1px grey', },
+  },
+  {
+    no: 8,
+    moji: '',
+    func: set_color,
+    style: { background: 'hotpink', border: 'solid 5px black', },
+    base_style: {background: 'hotpink', border: 'solid 1px grey', },
+  },
+  {
+    no: 9,
+    moji: '',
+    func: delete_color,
+    style: { background: 'moccasin', border: 'solid 5px black', },
+    base_style: {background: 'moccasin', border: 'solid 1px grey', },
+  },
+  {
+    no: 10,
+    moji: 'DEL',
+    func: delete_value,
+    style: { background: 'moccasin', border: 'solid 5px black'},
+    base_style: { background: 'moccasin', border: 'solid 1px grey'},
+  },
 ];
 
-function initialize_blocks(tate, yoko) {
-    return Array(tate * yoko).fill(0);
+function set_value(block, command) {
+  const new_block = JSON.parse(JSON.stringify(block));
+  new_block.value = command.no + 1;
+
+  return new_block;
 }
 
-function getBlock(blocks, block_no) {
-    return blocks[block_no];
+function delete_value(block, command) {
+  const {
+    value,
+    color,
+    ...new_block 
+  } = JSON.parse(JSON.stringify(block));
+
+  return new_block;
 }
 
-function new_blocks(blocks, block_no, value) {
-    const new_blocks = Array(...blocks);
-    new_blocks[block_no] = value;
-    
-    return new_blocks;
+function set_color(block, command) {
+  const new_block = JSON.parse(JSON.stringify(block));
+  new_block.color =command.base_style['background'];
+
+  return new_block;
 }
 
-function set_value(blocks, block_no, command) {
-    return new_blocks(blocks, block_no, command + 1);
-}
-function delete_value(blocks, block_no, command) {
-    return new_blocks(blocks, block_no, 0);
+function delete_color(block, command) {
+  const {
+    color,
+    ...new_block 
+  } = JSON.parse(JSON.stringify(block));
+
+  return new_block;
 }
 
-export default initialize_blocks;
-export { command_data, getBlock }
+export default command_data;

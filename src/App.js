@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
 import sketch from './sketch';
-import initialize_blocks, {command_data} from './block';
+import command_data from './block';
 
 function Panel({panel, onSelect, yoko=5, size=50, style={}, selectedStyle = (i) => { return {background: 'transparent'}}}) {
-    return (
-        <>
-            {panel.map((v, i) => {
-                const no = Number.isInteger(v.no) ? v.no : i;
-                return (<button key={no} 
-                                style={{width:size+'px', height:size+'px', position: 'absolute', top:Math.floor(no / yoko) * size, left: (no % yoko) * size,
-                                        ...selectedStyle(no),
-                                        ...style}}
-                                onClick={ () => onSelect(no) }>
-                            {v.moji}
-                        </button>)
-            })}
-        </>
-    );
+  return (
+    <>
+      {panel.map((v, i) => {
+        const no = Number.isInteger(v.no) ? v.no : i;
+	const moji = v.moji || '';
+        return (<button key={no} 
+                        style={{width:size+'px', height:size+'px', position: 'absolute', top:Math.floor(no / yoko) * size, left: (no % yoko) * size,
+                                ...selectedStyle(no),
+                                ...style}}
+                        onClick={ () => onSelect(no) }>
+                  {moji}
+                </button>)
+      })}
+    </>
+  );
 }
 
 function Board({command}) {
-    const TATE=5;
-    const YOKO=5;
+  const TATE=5;
+  const YOKO=5;
 
-    const values = new Array(TATE * YOKO).fill({moji:''});
+  const [blocks, setBlocks] = useState(Array(TATE * YOKO).fill({}));
 
-    const [blocks, setBlocks] = useState(initialize_blocks(TATE, YOKO));
-
-    function dispatch_command(block_no, command) {
-        if (!command || !Number.isInteger(command.no)) return;
-        setBlocks(command.func(blocks, block_no, command.no));
-    }
-
-    return (
-        <div style={{position:"relative", height:260}}>
-            <ReactP5Wrapper sketch={sketch} width={250} height={250} blocks={blocks} style={{position:"absolute"}}/>
-            <Panel panel={values} onSelect={(v) => { dispatch_command(v, command)}} style={{background: 'transparent', border: 'dashed 1px grey'}} />
-        </div>
-    );
+  function dispatch_command(block_no, command) {
+    if (!command) return;
+    const new_blocks = Array(...blocks);
+    new_blocks[block_no] = command.func(blocks[block_no], command);
+    setBlocks(new_blocks);
+  }
+  
+  return (
+    <div style={{position:"relative", height:260}}>
+      <ReactP5Wrapper sketch={sketch} width={250} height={250} blocks={blocks} style={{position:"absolute"}}/>
+      <Panel panel={blocks} onSelect={(v) => { dispatch_command(v, command)}} style={{background: 'transparent', border: 'dashed 1px grey'}} />
+    </div>
+  );
 }
 
 function Command({command, onSelect}) {
