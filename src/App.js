@@ -10,6 +10,7 @@ function Game(props) {
 
   const [command, setCommand] = useState(null);
   const [blocks, setBlocks] = useState(Array(TATE * YOKO).fill({}));
+  const [hint, setHint] = useState(false);
   const [blocks_history,
 	 {
 	   set: setBlocksHistory,
@@ -41,6 +42,8 @@ function Game(props) {
 	      const new_blocks =Array(TATE * YOKO).fill({});
 	      setBlocks(new_blocks);
 	      setBlocksHistory(new_blocks);
+      } else if (new_command.moji === 'HINT') {
+        setHint(!hint);
       }
     }
   }
@@ -57,7 +60,7 @@ function Game(props) {
   return (
     <>
       <h1>{props.title}</h1>
-      <Board blocks={blocks} onSelect={dispatchCommand} />
+      <Board blocks={blocks} hint={hint} onSelect={dispatchCommand} />
       <Command command={command} onSelect={selectCommand} />
     </>
   );

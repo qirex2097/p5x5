@@ -67,11 +67,9 @@ const command_data = [
     base_style: {background: 'moccasin', border: 'solid 1px grey', },
   },
   {
-    no: 14,
-    moji: 'DEL',
-    func: delete_value,
-    selected_style: { background: 'moccasin', border: 'solid 5px black'},
-    base_style: { background: 'moccasin', border: 'solid 1px grey'},
+    no: 10,
+    moji: 'CLS',
+    base_style: { background: 'dimgrey', color: 'white', border: 'solid 1px grey'},
   },
   {
     no: 11,
@@ -84,9 +82,16 @@ const command_data = [
     base_style: { background: 'darkslategrey', color: 'white', border: 'solid 1px grey'},
   },
   {
-    no: 10,
-    moji: 'CLS',
-    base_style: { background: 'dimgrey', color: 'white', border: 'solid 1px grey'},
+    no: 13,
+    moji: 'HINT',
+    base_style: { background: 'black', color: 'white', border: 'solid 1px grey'},
+  },
+  {
+    no: 14,
+    moji: 'DEL',
+    func: delete_value,
+    selected_style: { background: 'moccasin', border: 'solid 5px black'},
+    base_style: { background: 'moccasin', border: 'solid 1px grey'},
   },
 ];
 

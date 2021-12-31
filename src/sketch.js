@@ -3,6 +3,7 @@ function sketch(p5) {
   let height = 400;
   let size = 50;
   let blocks = [];
+  let hint = false;
 
   p5.setup = () => {
     p5.createCanvas(width, height);
@@ -16,6 +17,8 @@ function sketch(p5) {
     for (let i = 0; i < blocks.length; i++) {
       const x = (i % 5) * size;
       const y = Math.floor(i / 5) * size;
+      const center_x = x + size / 2;
+      const center_y = y + size / 2;
       const block = blocks[i];
 
       
@@ -27,12 +30,13 @@ function sketch(p5) {
         p5.fill('black');
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textSize(32);
-        p5.text(block.value, x + size / 2, y + size / 2);
-      } else {
+        p5.text(block.value, center_x, center_y);
+      } else if (hint) {
+        const moji = getPosibility(blocks, i).join('');
         p5.fill('grey');
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textSize(12);
-        p5.text('12345', x + size / 2, y + size / 2);
+        p5.text(moji, center_x, center_y);
       }
     }
   }
@@ -44,7 +48,20 @@ function sketch(p5) {
       p5.resizeCanvas(width, height);
     }
     blocks = props.blocks;
+    hint = props.hint;
   }
+}
+
+function getPosibility(blocks, i) {
+  const posible = [];
+  for (let j = Math.floor(i / 5) * 5; j < Math.floor(i / 5) * 5 + 5; j++) {
+    if (blocks[j].value > 0) posible.push(blocks[j].value);
+  }
+  for (let j = i % 5 ; j < i % 5 + 25; j += 5) {
+    if (blocks[j].value > 0) posible.push(blocks[j].value);
+  }
+
+  return [1,2,3,4,5].filter(e => {if (!posible.includes(e)) return e }).sort();
 }
 
 export default sketch;
