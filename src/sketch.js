@@ -20,14 +20,19 @@ function sketch(p5) {
 
       
       if (block.color) {
-	p5.fill(block.color);
-	p5.rect(x, y, size);
+      	p5.fill(block.color);
+	      p5.rect(x, y, size);
       }
       if (block.value > 0) {
         p5.fill('black');
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textSize(32);
         p5.text(block.value, x + size / 2, y + size / 2);
+      } else {
+        p5.fill('grey');
+        p5.textAlign(p5.CENTER, p5.CENTER);
+        p5.textSize(12);
+        p5.text('12345', x + size / 2, y + size / 2);
       }
     }
   }
