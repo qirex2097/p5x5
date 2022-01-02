@@ -5,7 +5,7 @@ function Panel({
   size = 50,
   style = {},
   selectedStyle = (i) => {
-    return { background: "transparent" };
+    return { background: "moccasin" };
   },
 }) {
   return (

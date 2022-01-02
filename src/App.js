@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import Board from "./board";
 import Command from "./command";
 import useUndo from "./lib/undo-with-usestate";
+import { useBlocks } from "./BlockProvider";
 
 export const BlockContext = createContext();
 
@@ -10,7 +11,8 @@ function Game(props) {
   const YOKO = 5;
 
   const [command, setCommand] = useState(null);
-  const [blocks, setBlocks] = useState(Array(TATE * YOKO).fill({}));
+  const { blocks, setBlocks } = useBlocks();
+//  const [blocks, setBlocks] = useState(Array(TATE * YOKO).fill({}));
   const [hint, setHint] = useState(false);
   const [
     blocks_history,
@@ -73,11 +75,11 @@ function Game(props) {
   };
 
   return (
-    <BlockContext.Provider value={{blocks}}>
+    <>
       <h1>{props.title}</h1>
       <Board hint={hint} onSelect={dispatchCommand} />
       <Command command={command} onSelect={selectCommand} />
-    </BlockContext.Provider>
+    </>
   );
 }
 

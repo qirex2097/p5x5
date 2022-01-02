@@ -2,10 +2,10 @@ import { useContext } from "react";
 import { ReactP5Wrapper } from "react-p5-wrapper";
 import sketch from "./sketch";
 import Panel from "./panel";
-import { BlockContext } from "./App";
+import {useBlocks} from "./BlockProvider";
 
 function Board({ hint, onSelect }) {
-  const { blocks } = useContext(BlockContext);
+  const { blocks } = useBlocks();
   return (
     <div style={{ position: "relative", height: 260 }}>
       <ReactP5Wrapper
