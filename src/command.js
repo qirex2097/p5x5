@@ -164,7 +164,7 @@ function Command({ command, onSelect }) {
       <Panel
         panel={command_data}
         onSelect={(no) => onSelect(selected_command(no))}
-        selectedStyle={(i) => selectedStyle(selected_command(i))}
+        selectedStyle={(no) => selectedStyle(selected_command(no))}
       />
     </div>
   );

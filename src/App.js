@@ -1,59 +1,30 @@
-import React, { createContext, useState } from "react";
+import React, { useState } from "react";
 import Board from "./board";
 import Command from "./command";
-import useUndo from "./lib/undo-with-usestate";
 import { useBlocks } from "./BlockProvider";
 
-export const BlockContext = createContext();
-
 function Game(props) {
-  const TATE = 5;
-  const YOKO = 5;
-
   const [command, setCommand] = useState(null);
-  const { blocks, setBlocks } = useBlocks();
-//  const [blocks, setBlocks] = useState(Array(TATE * YOKO).fill({}));
   const [hint, setHint] = useState(false);
-  const [
-    blocks_history,
-    {
-      set: setBlocksHistory,
-      //	   reset: resetBlocksHistory,
-      undo: undoBlocksHistory,
-      redo: redoBlocksHistory,
-      canUndo,
-      canRedo,
-    },
-  ] = useUndo(blocks);
+  const {
+    blocks,
+    updateBlock,
+    undoBlocks,
+    redoBlocks,
+    clsBlocks,
+  } = useBlocks();
 
-
-  const command_undo = () => {
-    if (canUndo) {
-      setBlocks(blocks_history.past[blocks_history.past.length - 1]);
-      undoBlocksHistory();
-    }
-  }
-  const command_redo = () => {
-    if (canRedo) {
-      setBlocks(blocks_history.future[0]);
-      redoBlocksHistory();
-    }
-  }
-  const command_cls = () => {
-    const new_blocks = Array(TATE * YOKO).fill({});
-    setBlocks(new_blocks);
-    setBlocksHistory(new_blocks);
-  }
-  const command_hint = () => {
-    setHint(!hint);
-  }
+  const command_undo = () => undoBlocks();
+  const command_redo = () => redoBlocks();
+  const command_cls = () => clsBlocks();
+  const command_hint = () => setHint(!hint);
 
   const command_func = {
     UNDO: command_undo,
     REDO: command_redo,
     CLS: command_cls,
     HINT: command_hint,
-  }
+  };
 
   const selectCommand = (new_command) => {
     if (command && command.no === new_command.no) {
@@ -67,11 +38,8 @@ function Game(props) {
 
   const dispatchCommand = (block_no) => {
     if (!command) return;
-    const new_blocks = Array(...blocks);
     const new_block = command.func(blocks[block_no], command);
-    new_blocks[block_no] = new_block;
-    setBlocks(new_blocks);
-    setBlocksHistory(new_blocks);
+    updateBlock(block_no, new_block);
   };
 
   return (
